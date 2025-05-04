@@ -1,11 +1,19 @@
 export enum TokenType {
+	// Literal Types
 	Number,
 	Identifier,
+
+	// Keywords
+	Let,
+
+	// Grouping Operators
 	Equals,
 	OpenParen,
 	CloseParen,
 	BinaryOperator,
-	Let,
+
+	// End of File
+	EOF,
 }
 
 const KEYWORDS: Record<string, TokenType> = {
@@ -83,6 +91,7 @@ export function tokenize(sourceCode: string): Token[] {
 		}
 	}
 
+	tokens.push(token("EndOfFile", TokenType.EOF));
 	return tokens;
 }
 
