@@ -1,4 +1,12 @@
-import { Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier } from "./ast.ts";
+import {
+	Stmt,
+	Program,
+	Expr,
+	BinaryExpr,
+	NumericLiteral,
+	Identifier,
+	VarDeclaration,
+} from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 
 export default class Parser {
@@ -13,11 +21,12 @@ export default class Parser {
 	}
 
 	// deno-lint-ignore no-explicit-any
-	private expect(type: TokenType, err: any) {
+	private expect(type: TokenType, err: any): Token {
 		const prev = this.eat();
 		if (!prev || prev.type !== type) {
 			console.error("Parser Error: \n ", err, prev, " -Expecting ", type);
 		}
+		return prev;
 	}
 
 	private not_eof(): boolean {
@@ -25,8 +34,52 @@ export default class Parser {
 	}
 
 	private parse_stmt(): Stmt {
-		// skip to parse expr cause no stmt for no except program
-		return this.parse_expr();
+		switch (this.at().type) {
+			case TokenType.Let:
+			case TokenType.Const:
+				return this.parse_var_declaration();
+
+			default:
+				return this.parse_expr();
+		}
+	}
+
+	// LET IDENT;
+	// (LET | CONST) IDENT = EXPR;
+	private parse_var_declaration(): Stmt {
+		const isConstant = this.eat().type == TokenType.Const;
+		const identifier = this.expect(
+			TokenType.Identifier,
+			"Expected identifier name following let | const keywords"
+		).value;
+
+		if (this.at().type == TokenType.Semicolon) {
+			this.eat();
+			if (isConstant) {
+				// NOT ALLOWED
+				throw "Must assign value to constant expression, No value provided.";
+			}
+
+			return {
+				kind: "VarDeclaration",
+				identifier: identifier,
+				constant: false,
+			} as VarDeclaration;
+		}
+
+		this.expect(TokenType.Equals, "Expected equals token following variable declaration");
+
+		const declaration = {
+			kind: "VarDeclaration",
+			identifier: identifier,
+			constant: isConstant,
+			value: this.parse_expr(),
+		} as VarDeclaration;
+
+		// Force semicolon
+		this.expect(TokenType.Semicolon, "Variable declaration must end with ';' ");
+
+		return declaration;
 	}
 
 	private parse_expr(): Expr {
