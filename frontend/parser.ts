@@ -1,4 +1,4 @@
-import { Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier, NullLiteral } from "./ast.ts";
+import { Stmt, Program, Expr, BinaryExpr, NumericLiteral, Identifier } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 
 export default class Parser {
@@ -78,10 +78,6 @@ export default class Parser {
 
 			case TokenType.Number:
 				return { kind: "NumericLiteral", value: parseFloat(this.eat().value) } as NumericLiteral;
-
-			case TokenType.NULL:
-				this.eat();
-				return { kind: "NullLiteral", value: "null" } as NullLiteral;
 
 			case TokenType.OpenParen: {
 				this.eat(); // opening paren
