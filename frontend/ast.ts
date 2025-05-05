@@ -5,9 +5,13 @@ export type NodeType =
 
 	// EXPRESSIONS
 	| "AssignmentExpr"
-	| "NumericLiteral"
+	| "BinaryExpr"
 	| "Identifier"
-	| "BinaryExpr";
+
+	// Literal Expr
+	| "NumericLiteral"
+	| "Property"
+	| "ObjectLiteral";
 
 export interface Stmt {
 	kind: NodeType;
@@ -48,4 +52,15 @@ export interface Identifier extends Expr {
 export interface NumericLiteral extends Expr {
 	kind: "NumericLiteral";
 	value: number;
+}
+
+export interface ObjectLiteral extends Expr {
+	kind: "ObjectLiteral";
+	properties: Property[];
+}
+
+export interface Property extends Expr {
+	kind: "Property";
+	key: string;
+	value?: Expr;
 }

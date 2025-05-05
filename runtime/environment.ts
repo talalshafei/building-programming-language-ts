@@ -1,4 +1,14 @@
-import { RuntimeVal } from "./values.ts";
+import { MK_BOOL, MK_NULL, RuntimeVal } from "./values.ts";
+
+export function NewGlobalEnv(): Environment {
+	const env = new Environment();
+	// Create Defaults
+	env.declareVar("true", MK_BOOL(true), true);
+	env.declareVar("false", MK_BOOL(false), true);
+	env.declareVar("null", MK_NULL(), true);
+
+	return env;
+}
 
 export default class Environment {
 	private parent?: Environment;
