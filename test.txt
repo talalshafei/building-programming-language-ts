@@ -9,4 +9,8 @@ const obj = {
     },
 };
 
-obj.x + 5
+print(foo, 5)
+
+const timeNow = time();
+
+print(timeNow)
