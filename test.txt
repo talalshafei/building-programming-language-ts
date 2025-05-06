@@ -1,16 +1,11 @@
-let foo = 45;
+fn makeAdder(offset){
 
-const obj = {
-    x: 100,
-    y: 32,
-    foo,
-    complex: {
-        bar: true,
-    },
-};
+    fn add(x, y) {
+        x + y + offset
+    }
 
-print(foo, 5)
+    add
+}
 
-const timeNow = time();
-
-print(timeNow)
+const adder = makeAdder(1);
+print(adder(10, 5))

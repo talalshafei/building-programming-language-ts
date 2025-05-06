@@ -11,6 +11,7 @@ import {
 	ObjectLiteral,
 	CallExpr,
 	MemberExpr,
+	FunctionDeclaration,
 } from "./ast.ts";
 import { tokenize, Token, TokenType } from "./lexer.ts";
 
@@ -35,7 +36,7 @@ export default class Parser {
 	}
 
 	private not_eof(): boolean {
-		return this.at().type != TokenType.EOF;
+		return this.at().type !== TokenType.EOF;
 	}
 
 	private parse_stmt(): Stmt {
@@ -44,9 +45,49 @@ export default class Parser {
 			case TokenType.Const:
 				return this.parse_var_declaration();
 
+			case TokenType.Fn:
+				return this.parse_fn_declaration();
+
 			default:
 				return this.parse_expr();
 		}
+	}
+
+	private parse_fn_declaration(): Stmt {
+		this.eat(); // consume 'fn'
+
+		const name = this.expect(
+			TokenType.Identifier,
+			"Expected function name following 'fn' keyword. "
+		).value;
+
+		const parameters: string[] = [];
+
+		const args = this.parse_args();
+		for (const arg of args) {
+			if (arg.kind !== "Identifier") throw "Parameters are expected to be Identifiers. ";
+
+			parameters.push((arg as Identifier).symbol);
+		}
+
+		this.expect(TokenType.OpenCurlyBrace, "Expected open curly brace '{' to start function body. ");
+
+		const body: Stmt[] = [];
+		while (this.not_eof() && this.at().type !== TokenType.CloseCurlyBrace) {
+			body.push(this.parse_stmt());
+		}
+
+		this.expect(
+			TokenType.CloseCurlyBrace,
+			"Expected closing curly brace '}' to end function body. "
+		);
+
+		return {
+			kind: "FunctionDeclaration",
+			name,
+			parameters,
+			body,
+		} as FunctionDeclaration;
 	}
 
 	// LET IDENT;

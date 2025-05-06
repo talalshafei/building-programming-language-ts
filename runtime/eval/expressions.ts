@@ -7,7 +7,15 @@ import {
 } from "../../frontend/ast.ts";
 import Environment from "../environment.ts";
 import { evaluate } from "../interpreter.ts";
-import { NumberVal, MK_NUMBER, RuntimeVal, MK_NULL, ObjectVal, NativeFnValue } from "../values.ts";
+import {
+	NumberVal,
+	MK_NUMBER,
+	RuntimeVal,
+	MK_NULL,
+	ObjectVal,
+	NativeFnValue,
+	FunctionVal,
+} from "../values.ts";
 
 function eval_numeric_binary_expr(lhs: NumberVal, rhs: NumberVal, operator: string): NumberVal {
 	let result = 0;
@@ -66,8 +74,29 @@ export function eval_object_expr(obj: ObjectLiteral, env: Environment): RuntimeV
 export function eval_call_expr(expr: CallExpr, env: Environment): RuntimeVal {
 	const args = expr.args.map((arg) => evaluate(arg, env));
 	const fn = evaluate(expr.caller, env);
-	if (fn.type !== "native-fn")
-		throw `Cannot call value that is not a function: ` + JSON.stringify(fn);
+	if (fn.type === "native-fn") {
+		return (fn as NativeFnValue).call(args, env);
+	} else if (fn.type === "function") {
+		const func = fn as FunctionVal;
+		const paramsSize = func.parameters.length;
 
-	return (fn as NativeFnValue).call(args, env);
+		if (args.length != paramsSize)
+			throw `Arguments number doesn't equal the expected number of parameters for function: ${func.name}. `;
+
+		const scope = new Environment(func.declarationEnv);
+
+		for (let i = 0; i < paramsSize; i++) {
+			const varname = func.parameters[i];
+			scope.declareVar(varname, args[i], false);
+		}
+
+		let result: RuntimeVal = MK_NULL();
+		for (const stmt of func.body) {
+			result = evaluate(stmt, scope);
+		}
+
+		return result;
+	}
+
+	throw `Cannot call value that is not a function: ` + JSON.stringify(fn);
 }
