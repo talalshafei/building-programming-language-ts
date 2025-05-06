@@ -42,6 +42,7 @@ function token(value = "", type: TokenType): Token {
 }
 
 function isalpha(src: string) {
+	// for now Identifiers should only consist of a-z/A-Z chars
 	return src.toUpperCase() != src.toLowerCase();
 }
 
@@ -61,9 +62,13 @@ export function tokenize(sourceCode: string): Token[] {
 	const src = sourceCode.split("");
 
 	// Build each token until end of file
-	// not ver efficient but simple
+	// not very efficient but simple
 	while (src.length > 0) {
-		if (src[0] === "(") {
+		if (src[0] === "#") {
+			while (src.length > 0 && src.shift() !== "\n") {
+				// skip the entire line
+			}
+		} else if (src[0] === "(") {
 			tokens.push(token(src.shift(), TokenType.OpenParen));
 		} else if (src[0] === ")") {
 			tokens.push(token(src.shift(), TokenType.CloseParen));

@@ -1,11 +1,58 @@
-fn makeAdder(offset){
+# Variable declarations
+let x = 10;
+const y = 20;
+print(x + y)  # 30
+print() # empty print to print new line
 
-    fn add(x, y) {
-        x + y + offset
+
+# Arithmetic operations
+print(10 * 5)  # 50
+print(20 / 4)  # 5
+print(10 % 3)  # 1
+print()
+
+
+# Object literals
+let person = {
+    age: 30,
+    isActive: true
+};
+print(person)
+print()
+
+
+# Basic function
+fn add(a, b) {
+    a + b
+}
+print(add(5, 10))  # 15
+print()
+
+
+# Closures and higher-order functions
+fn makeCounter(start) {
+    let count = start;
+    
+    fn increment() {
+        count = count + 1
+        count
     }
-
-    add
+    
+    increment
 }
 
-const adder = makeAdder(1);
-print(adder(10, 5))
+# Create two separate counters
+const counterX = makeCounter(0);
+const counterY = makeCounter(10);
+
+print(counterX())  # 1
+print(counterX())  # 2
+print(counterY())  # 11
+print()
+
+# Built-in
+print(time())  # Current timestamp
+print(true)
+print(false)
+print(null)
+print()
