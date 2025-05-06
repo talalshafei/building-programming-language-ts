@@ -8,3 +8,5 @@ const obj = {
         bar: true,
     },
 };
+
+obj.x + 5

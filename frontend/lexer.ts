@@ -11,12 +11,15 @@ export enum TokenType {
 	BinaryOperator,
 	Equals,
 	Comma,
+	Dot,
 	Colon,
 	Semicolon,
 	OpenParen, // (
 	CloseParen, // )
 	OpenCurlyBrace, // {
 	CloseCurlyBrace, // }
+	OpenBracket, // [
+	CloseBracket, // ]
 
 	// End of File
 	EOF,
@@ -66,6 +69,10 @@ export function tokenize(sourceCode: string): Token[] {
 			tokens.push(token(src.shift(), TokenType.OpenCurlyBrace));
 		} else if (src[0] === "}") {
 			tokens.push(token(src.shift(), TokenType.CloseCurlyBrace));
+		} else if (src[0] === "[") {
+			tokens.push(token(src.shift(), TokenType.OpenBracket));
+		} else if (src[0] === "]") {
+			tokens.push(token(src.shift(), TokenType.CloseBracket));
 		} else if (
 			src[0] === "+" ||
 			src[0] === "-" ||
@@ -82,6 +89,8 @@ export function tokenize(sourceCode: string): Token[] {
 			tokens.push(token(src.shift(), TokenType.Colon));
 		} else if (src[0] === ",") {
 			tokens.push(token(src.shift(), TokenType.Comma));
+		} else if (src[0] === ".") {
+			tokens.push(token(src.shift(), TokenType.Dot));
 		} else {
 			// Handle multi char tokens
 
