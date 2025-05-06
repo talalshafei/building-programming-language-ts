@@ -33,32 +33,39 @@ Save this to a file and run it to test all language features:
 let x = 10;
 const y = 20;
 print(x + y)  # 30
+print() # empty print to print new line
+
 
 # Arithmetic operations
 print(10 * 5)  # 50
 print(20 / 4)  # 5
 print(10 % 3)  # 1
+print()
+
 
 # Object literals
 let person = {
-    name: "John",
     age: 30,
     isActive: true
 };
 print(person)
+print()
+
 
 # Basic function
 fn add(a, b) {
     a + b
 }
 print(add(5, 10))  # 15
+print()
+
 
 # Closures and higher-order functions
 fn makeCounter(start) {
     let count = start;
     
     fn increment() {
-        count = count + 1;
+        count = count + 1
         count
     }
     
@@ -66,18 +73,21 @@ fn makeCounter(start) {
 }
 
 # Create two separate counters
-const counter1 = makeCounter(0);
-const counter2 = makeCounter(10);
+const counterX = makeCounter(0);
+const counterY = makeCounter(10);
 
-print(counter1())  # 1
-print(counter1())  # 2
-print(counter2())  # 11
+print(counterX())  # 1
+print(counterX())  # 2
+print(counterY())  # 11
+print()
 
 # Built-in
 print(time())  # Current timestamp
 print(true)
 print(false)
 print(null)
+print()
+
 
 ```
 
